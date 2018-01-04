@@ -35,7 +35,7 @@ function _check(req, res) {
 // Get unused shortUrl
 function _url(req, res) {
     DB.unused(function(url) {
-	res.send({shortUrl: url})
+	       res.send({shortUrl: url})
     })
 }
 

@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {FormControl, FormGroup, Collapse, Well} from 'react-bootstrap';
+import {isWebUri} from 'valid-url';
 
 import Api from './Api.jsx';
 
@@ -32,7 +33,7 @@ class Short extends Component {
     }
 
     async changed(ev) {
-        console.log(this.placeholder);
+        // TODO make this function more rational
         this.setState(Object.assign(
             this.state,
             {value: ev.target.value}
@@ -43,6 +44,7 @@ class Short extends Component {
                 this.state,
                 {validation: 'success'}
             ))
+            this.props.onChange(ev)
             return;
         }
 
@@ -52,6 +54,7 @@ class Short extends Component {
                 this.state,
                 {validation: 'error'}
             ))
+            this.props.onChange(ev)
             return;
         }
 
@@ -62,6 +65,7 @@ class Short extends Component {
                 this.state,
                 {validation: 'error'}
             ))
+            this.props.onChange(ev)
             return;
         }
 
@@ -69,6 +73,8 @@ class Short extends Component {
             this.state,
             {validation: 'success'}
         ))
+
+        this.props.onChange(ev)
 
     }
 
@@ -92,16 +98,43 @@ class Short extends Component {
 }
 
 class Long extends Component {
-    getValidationState = () => {
-        return null;
+    constructor(props) {
+        super(props)
+
+        this.state = {
+            value: ''
+        }
+
+        this.validation = 'error'
+
+        this.isValid = this.isValid.bind(this)
+        this.changed = this.changed.bind(this)
+    }
+
+    isValid() {
+        return this.validation === 'success'
+    }
+
+    changed(ev) {
+        this.setState({
+            value: ev.target.value
+        })
+
+        this.validation = isWebUri(ev.target.value) ? 'success' : 'error'
+
+        this.props.onChange(ev)
     }
 
     render() {
         return (
-            <FormGroup validationState={this.getValidationState()}>
+            <FormGroup validationState={this.validation}>
                 <FormControl
+                    placeholder="Insert your long url here"
                     type="text"
+                    value={this.state.value}
+                    onChange={this.changed}
                 />
+                <FormControl.Feedback />
             </FormGroup>
         )
     }

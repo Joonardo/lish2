@@ -13,7 +13,6 @@ DB.set = function(key, value, cb) {
     //db.expire(prefix + key, 3600)
 };
 DB.exists = function(key, cb) {
-    console.log(prefix + key)
     db.exists(prefix + key, function(err, reply) { cb(reply === 1) })
 };
 DB.unused = function(cb, len = 4) {
