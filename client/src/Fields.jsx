@@ -16,16 +16,38 @@ class Short extends Component {
 
         this.error = ''
 
-        this.changed = this.changed.bind(this);
-        this.isValid = this.isValid.bind(this);
+        this.changed = this.changed.bind(this)
+        this.isValid = this.isValid.bind(this)
+        this.value = this.value.bind(this)
+        this.getPlaceholder = this.getPlaceholder.bind(this)
+        this.refresh = this.refresh.bind(this)
+        this.validate = this.validate.bind(this)
     }
 
-    async componentDidMount() {
+    async refresh(added) {
+        if(added) {
+            this.getPlaceholder()
+        }
+        this.validate()
+    }
+
+    async getPlaceholder() {
         const ph = await Api.placeholder()
         this.setState( Object.assign(
             this.state,
             {placeholder: ph}
         ))
+    }
+
+    componentDidMount() {
+        this.getPlaceholder()
+    }
+
+    value() {
+        if(this.state.value.length === 0) {
+            return this.state.placeholder
+        }
+        return this.state.value
     }
 
     isValid() {
@@ -34,18 +56,22 @@ class Short extends Component {
 
     async changed(ev) {
         // TODO make this function more rational
-        this.setState(Object.assign(
+        await this.setState(Object.assign(
             this.state,
             {value: ev.target.value}
         ))
 
+        this.validate()
+    }
+
+    async validate() {
         if(this.state.value.length === 0) {
             this.setState( Object.assign(
                 this.state,
                 {validation: 'success'}
             ))
-            this.props.onChange(ev)
-            return;
+            this.props.onChange()
+            return
         }
 
         if(!/^[a-zA-Z0-9]+$/.test(this.state.value)) {
@@ -54,8 +80,8 @@ class Short extends Component {
                 this.state,
                 {validation: 'error'}
             ))
-            this.props.onChange(ev)
-            return;
+            this.props.onChange()
+            return
         }
 
         const exists = await Api.exists(this.state.value)
@@ -65,8 +91,8 @@ class Short extends Component {
                 this.state,
                 {validation: 'error'}
             ))
-            this.props.onChange(ev)
-            return;
+            this.props.onChange()
+            return
         }
 
         this.setState( Object.assign(
@@ -74,7 +100,7 @@ class Short extends Component {
             {validation: 'success'}
         ))
 
-        this.props.onChange(ev)
+        this.props.onChange()
 
     }
 
@@ -109,7 +135,14 @@ class Long extends Component {
 
         this.isValid = this.isValid.bind(this)
         this.changed = this.changed.bind(this)
+        this.value = this.value.bind(this)
     }
+
+
+    value() {
+        return this.state.value
+    }
+
 
     isValid() {
         return this.validation === 'success'
