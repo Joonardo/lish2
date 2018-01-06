@@ -2,10 +2,11 @@ import DB from './DB.js';
 
 // Get url for shortUrl
 function _get(req, res) {
-    const short = req.shortUrl;
+    const short = req.query.shortUrl
 
     DB.get(short, (err, reply) => {
-        if(err)
+        console.log(err, reply);
+        if(err || !reply)
             res.send({success: false})
         else
             res.send({success: true, url: reply.toString()})
@@ -15,7 +16,7 @@ function _get(req, res) {
 // Add new url
 function _addUrl(req, res) {
     const short = req.body.shortUrl,
-        long = req.body.longUrl;
+        long = req.body.longUrl
     console.log(short, long)
     DB.exists(short, function(e) {
         if(!e) {
@@ -28,7 +29,7 @@ function _addUrl(req, res) {
 // Check short url
 function _check(req, res) {
     DB.exists(req.body.shortUrl, function(e) {
-	res.send({exists: e})
+	       res.send({exists: e})
     })
 }
 

@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import {Route} from 'react-router-dom'
 import {Form, FormGroup, Button, Col, Modal} from 'react-bootstrap';
 
 import Fields from './Fields.jsx';
@@ -58,6 +57,7 @@ class Main extends Component {
                         </Col>
                         <Col xs={3} sm={3} md={3} lg={3}>
                             <Button
+                                bsStyle="primary"
                                 onClick={this.submit}
                                 disabled={!this.state.valid}
                             >Submit</Button>
